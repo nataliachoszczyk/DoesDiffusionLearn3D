@@ -282,6 +282,8 @@ def render_scene(args,
   bpy.context.scene.cycles.samples = args.render_num_samples
   bpy.context.scene.cycles.transparent_min_bounces = args.render_min_bounces
   bpy.context.scene.cycles.transparent_max_bounces = args.render_max_bounces
+  bpy.context.scene.cycles.film_transparent = True
+
   if args.use_gpu == 1:
     bpy.context.scene.cycles.device = 'GPU'
 
@@ -352,6 +354,8 @@ def render_scene(args,
   elif args.key_light_jitter > 0:
     for i in range(3):
       bpy.data.objects['Lamp_Key'].location[i] += rand(args.key_light_jitter)
+  # bpy.data.objects['Lamp_Key'].data.size = 0.8
+
 
   if args.back_light_jitter > 0:
     for i in range(3):
@@ -376,10 +380,10 @@ def render_scene(args,
   # ground.active_material.use_nodes = True
   # ground.active_material.node_tree.nodes['Diffuse BSDF'].inputs[0].default_value = (1.0, 1.0, 1.0, 1.0)
   bpy.context.scene.world.node_tree.nodes['Background'].inputs[0].default_value = (1.0, 1.0, 1.0, 1.0)
-  bpy.context.scene.world.node_tree.nodes['Background'].inputs[1].default_value = 1.0
+  bpy.context.scene.world.node_tree.nodes['Background'].inputs[1].default_value = 0.2
 
   ground = bpy.data.objects['Ground']
-  ground.cycles.is_shadow_catcher = True
+  ground.cycles.is_shadow_catcher = False
 
   # Now make some random objects
   objects, blender_objects = add_random_objects(scene_struct, num_objects, args, camera)
@@ -393,13 +397,12 @@ def render_scene(args,
       break
     except Exception as e:
       print(e)
-
+      
   with open(output_scene, 'w') as f:
     json.dump(scene_struct, f, indent=2)
 
   if output_blendfile is not None:
     bpy.ops.wm.save_as_mainfile(filepath=output_blendfile)
-
 
 def add_random_objects(scene_struct, num_objects, args, camera):
   """

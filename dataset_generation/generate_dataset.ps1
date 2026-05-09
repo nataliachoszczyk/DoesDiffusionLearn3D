@@ -1,10 +1,10 @@
 $blender    = "C:\Program Files (x86)\blender-2.78c-windows64\blender.exe"
-$script     = "D:\STUDIA SZI\Semestr 2\Zaawansowane zagadnienia sieci neuronowych\Projekt\repo\DoesDiffusionLearn3D\clevr-dataset-gen\image_generation\render_images.py"
-$base_out   = "D:\STUDIA SZI\Semestr 2\Zaawansowane zagadnienia sieci neuronowych\Projekt\repo\DoesDiffusionLearn3D\data\v16"
-$clevr_data = "D:\STUDIA SZI\Semestr 2\Zaawansowane zagadnienia sieci neuronowych\Projekt\repo\DoesDiffusionLearn3D\clevr-dataset-gen\image_generation\data"
+$script     = "$PSScriptRoot\..\clevr-dataset-gen\image_generation\render_images.py"
+$base_out   = "$PSScriptRoot\..\data\final"
+$clevr_data = "$PSScriptRoot\..\clevr-dataset-gen\image_generation\data"
 
 $shapes = @("SmoothCube_v2", "Sphere", "SmoothCylinder")
-$images_per_shape = 3
+$images_per_shape = 1000
 $az_range = @(0.0, 360.0)
 $el_range = @(30.0, 75.0)
 
