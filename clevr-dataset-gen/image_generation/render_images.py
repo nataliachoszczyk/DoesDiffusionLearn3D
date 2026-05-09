@@ -68,6 +68,10 @@ parser.add_argument('--shape_color_combos_json', default=None,
 parser.add_argument('--shape', default=None,
     choices=['SmoothCube_v2', 'Sphere', 'SmoothCylinder'],
     help='Force a specific shape')
+parser.add_argument('--az_range', type=float, nargs=2, default=[0.0, 360.0],
+    help="Range [min, max] for random azimuth angle")
+parser.add_argument('--el_range', type=float, nargs=2, default=[30.0, 75.0],
+    help="Range [min, max] for random elevation angle")
 
 # Settings for objects
 parser.add_argument('--min_objects', default=1, type=int,
@@ -195,6 +199,15 @@ def main(args):
     if args.save_blendfiles == 1:
       blend_path = blend_template % (i + args.start_idx)
     num_objects = random.randint(args.min_objects, args.max_objects)
+    
+    # Losowanie az/el per obraz
+    if args.light_azimuth is None:
+        args.light_azimuth = round(random.uniform(args.az_range[0], args.az_range[1]), 1)
+    if args.light_elevation is None:
+        args.light_elevation = round(random.uniform(args.el_range[0], args.el_range[1]), 1)
+
+    print('[%d] az=%.1f el=%.1f' % (i + args.start_idx, args.light_azimuth, args.light_elevation))
+    
     render_scene(args,
       num_objects=num_objects,
       output_index=(i + args.start_idx),
@@ -203,6 +216,10 @@ def main(args):
       output_scene=scene_path,
       output_blendfile=blend_path,
     )
+    
+    # Reset na kolejny obraz
+    args.light_azimuth = None
+    args.light_elevation = None
 
   # After rendering all images, combine the JSON files for each scene into a
   # single JSON file.
