@@ -1,4 +1,4 @@
-$blender    = "C:\Program Files (x86)\blender-2.78c-windows64\blender.exe"
+$blender    = "C:\blender-2.78c-windows64\blender.exe"
 $script     = "$PSScriptRoot\..\clevr-dataset-gen\image_generation\render_images.py"
 $base_out   = "$PSScriptRoot\..\data\final"
 $clevr_data = "$PSScriptRoot\..\clevr-dataset-gen\image_generation\data"

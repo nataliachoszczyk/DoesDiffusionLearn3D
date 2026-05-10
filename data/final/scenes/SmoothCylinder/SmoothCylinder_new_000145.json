@@ -1,0 +1,72 @@
+{
+  "relationships": {
+    "front": [
+      []
+    ],
+    "right": [
+      []
+    ],
+    "behind": [
+      []
+    ],
+    "left": [
+      []
+    ]
+  },
+  "light_elevation_deg": 32.4,
+  "light_azimuth_deg": 299.5,
+  "objects": [
+    {
+      "material": "rubber",
+      "pixel_coords": [
+        211,
+        166,
+        13.093409538269043
+      ],
+      "shape": "cylinder",
+      "3d_coords": [
+        -2.5409576892852783,
+        0.8200532793998718,
+        1.0
+      ],
+      "size": "large",
+      "color": "purple",
+      "rotation": 249.05428868996012
+    }
+  ],
+  "image_index": 145,
+  "image_filename": "SmoothCylinder_new_000145.png",
+  "split": "new",
+  "directions": {
+    "front": [
+      0.754490315914154,
+      -0.6563112735748291,
+      -0.0
+    ],
+    "below": [
+      -0.0,
+      -0.0,
+      -1.0
+    ],
+    "left": [
+      -0.6563112735748291,
+      -0.7544902563095093,
+      0.0
+    ],
+    "right": [
+      0.6563112735748291,
+      0.7544902563095093,
+      -0.0
+    ],
+    "behind": [
+      -0.754490315914154,
+      0.6563112735748291,
+      0.0
+    ],
+    "above": [
+      0.0,
+      0.0,
+      1.0
+    ]
+  }
+}
