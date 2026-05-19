@@ -6,8 +6,8 @@ from diffusers import SanaPipeline
 from torchvision import transforms
 
 IMAGE_PATH = "/net/pr2/projects/plgrid/plggzzsn2026/3d_world_in_diffusion_models/DoesDiffusionLearn3D/data/final/images/Sphere/Sphere_new_000000.png"
-OUTPUT_DIR = "./test_output"
-TARGET_LAYER = "blocks.14"
+OUTPUT_DIR = "./tests/test_output"
+TARGET_LAYER = "transformer_blocks.14"
 TIMESTEP = 500
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
@@ -52,7 +52,10 @@ def main():
                 print(f" - {name}")
         raise ValueError(f"Layer {TARGET_LAYER} not found!")
 
-    print("[4] Processing image through VAE...")
+    print(f"[4] Processing image through VAE ({IMAGE_PATH})...")
+    if not os.path.exists(IMAGE_PATH):
+        raise FileNotFoundError(f"Nie znaleziono pliku obrazka pod ścieżką: {IMAGE_PATH}")
+
     image = Image.open(IMAGE_PATH).convert("RGB")
     preprocess = transforms.Compose([
         transforms.Resize((1024, 1024)), 
@@ -61,7 +64,7 @@ def main():
     ])
     img_tensor = preprocess(image).unsqueeze(0).to(device, dtype=torch.float16)
     
-    latents = pipeline.vae.encode(img_tensor).latent_dist.sample()
+    latents = pipeline.vae.encode(img_tensor)[0]
     latents = latents * pipeline.vae.config.scaling_factor
 
     print("[5] Adding noise and running forward pass...")

@@ -1,0 +1,19 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Fetching 16 files:   0%|          | 0/16 [00:00<?, ?it/s]Fetching 16 files:  12%|█▎        | 2/16 [00:00<00:02,  6.66it/s]Fetching 16 files:  25%|██▌       | 4/16 [00:16<00:58,  4.91s/it]Fetching 16 files:  75%|███████▌  | 12/16 [00:16<00:04,  1.14s/it]Fetching 16 files: 100%|██████████| 16/16 [00:16<00:00,  1.06s/it]
+Loading pipeline components...:   0%|          | 0/5 [00:00<?, ?it/s]Loading pipeline components...:  20%|██        | 1/5 [00:01<00:06,  1.68s/it]
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s][A
+Loading checkpoint shards:  50%|█████     | 1/2 [00:56<00:56, 56.89s/it][A
+Loading checkpoint shards: 100%|██████████| 2/2 [01:10<00:00, 31.69s/it][ALoading checkpoint shards: 100%|██████████| 2/2 [01:10<00:00, 35.47s/it]
+Loading pipeline components...:  40%|████      | 2/5 [01:13<02:08, 42.75s/it]Loading pipeline components...:  60%|██████    | 3/5 [01:13<00:46, 23.29s/it]
+Loading weights:   0%|          | 0/288 [00:00<?, ?it/s][A
+Loading weights:   0%|          | 1/288 [00:24<1:55:17, 24.10s/it][A
+Loading weights:  85%|████████▌ | 245/288 [00:24<00:03, 13.81it/s][A
+Loading weights:  95%|█████████▌| 274/288 [00:26<00:00, 14.32it/s][A
+Loading weights: 100%|█████████▉| 287/288 [00:27<00:00, 14.59it/s][ALoading weights: 100%|██████████| 288/288 [00:27<00:00, 10.57it/s]
+Loading pipeline components...:  80%|████████  | 4/5 [01:51<00:29, 29.33s/it]Loading pipeline components...: 100%|██████████| 5/5 [02:07<00:00, 24.24s/it]Loading pipeline components...: 100%|██████████| 5/5 [02:07<00:00, 25.42s/it]
+Traceback (most recent call last):
+  File "/net/pr2/projects/plgrid/plggzzsn2026/3d_world_in_diffusion_models/DoesDiffusionLearn3D/src/extract_activations.py", line 152, in <module>
+    main()
+  File "/net/pr2/projects/plgrid/plggzzsn2026/3d_world_in_diffusion_models/DoesDiffusionLearn3D/src/extract_activations.py", line 94, in main
+    raise ValueError("Not all target layers were found in the model.")
+ValueError: Not all target layers were found in the model.
