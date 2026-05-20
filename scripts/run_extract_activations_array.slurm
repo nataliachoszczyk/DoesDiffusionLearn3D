@@ -5,11 +5,11 @@
 #SBATCH -c 4
 #SBATCH --mem=30G
 #SBATCH -t 00:30:00
-#SBATCH --array=0-2
+#SBATCH --array=0-29
 #SBATCH -o /net/pr2/projects/plgrid/plggzzsn2026/3d_world_in_diffusion_models/DoesDiffusionLearn3D/scripts/outputs/array_%A_%a.log
 #SBATCH -e /net/pr2/projects/plgrid/plggzzsn2026/3d_world_in_diffusion_models/DoesDiffusionLearn3D/scripts/outputs/array_%A_%a.err
 
-MAX_PER_SHAPE=50 
+MAX_PER_SHAPE=1000 
 
 cd /net/pr2/projects/plgrid/plggzzsn2026/3d_world_in_diffusion_models/DoesDiffusionLearn3D
 

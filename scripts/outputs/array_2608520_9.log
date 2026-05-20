@@ -1,0 +1,7 @@
+=== STARTING TASK ID: 9 ===
+Shape 'SmoothCube_v2': selected 1000 images.
+Shape 'SmoothCylinder': selected 1000 images.
+Shape 'Sphere': selected 1000 images.
+Total images to process across all jobs: 3000
+This job will process 100 images (indices 900 to 999).
+=== TASK ID 9 COMPLETED ===
