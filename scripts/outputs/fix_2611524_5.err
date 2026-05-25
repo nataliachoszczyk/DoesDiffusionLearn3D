@@ -1,0 +1,9 @@
+Loading pipeline components...:   0%|          | 0/5 [00:00<?, ?it/s]
+Loading weights:   0%|          | 0/288 [00:00<?, ?it/s][A
+Loading weights:   5%|▍         | 13/288 [00:00<00:02, 111.65it/s][A
+Loading weights:  60%|█████▉    | 172/288 [00:00<00:00, 913.75it/s][ALoading weights: 100%|██████████| 288/288 [00:00<00:00, 1125.04it/s]
+Loading pipeline components...:  20%|██        | 1/5 [01:03<04:14, 63.74s/it]Loading pipeline components...:  40%|████      | 2/5 [01:03<01:18, 26.33s/it]Loading pipeline components...:  60%|██████    | 3/5 [01:15<00:39, 19.58s/it]Loading pipeline components...:  80%|████████  | 4/5 [01:16<00:12, 12.47s/it]
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s][A
+Loading checkpoint shards:  50%|█████     | 1/2 [01:02<01:02, 62.63s/it][A
+Loading checkpoint shards: 100%|██████████| 2/2 [01:21<00:00, 36.62s/it][ALoading checkpoint shards: 100%|██████████| 2/2 [01:21<00:00, 40.53s/it]
+Loading pipeline components...: 100%|██████████| 5/5 [02:38<00:00, 37.22s/it]Loading pipeline components...: 100%|██████████| 5/5 [02:38<00:00, 31.62s/it]

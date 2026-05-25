@@ -1,0 +1,12 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading pipeline components...:   0%|          | 0/5 [00:00<?, ?it/s]Loading pipeline components...:  20%|██        | 1/5 [00:01<00:06,  1.60s/it]Loading pipeline components...:  40%|████      | 2/5 [00:02<00:02,  1.11it/s]
+Loading weights:   0%|          | 0/288 [00:00<?, ?it/s][A
+Loading weights:   5%|▍         | 14/288 [00:05<01:17,  3.55it/s][A
+Loading weights:   5%|▌         | 15/288 [00:05<01:56,  2.34it/s][A
+Loading weights:  19%|█▉        | 56/288 [00:07<00:24,  9.53it/s][A
+Loading weights:  53%|█████▎    | 152/288 [00:07<00:03, 35.05it/s][ALoading weights: 100%|██████████| 288/288 [00:07<00:00, 36.73it/s]
+Loading pipeline components...:  60%|██████    | 3/5 [01:22<01:14, 37.09s/it]Loading pipeline components...:  80%|████████  | 4/5 [01:36<00:27, 27.95s/it]
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s][A
+Loading checkpoint shards:  50%|█████     | 1/2 [00:51<00:51, 51.83s/it][A
+Loading checkpoint shards: 100%|██████████| 2/2 [01:10<00:00, 32.56s/it][ALoading checkpoint shards: 100%|██████████| 2/2 [01:10<00:00, 35.45s/it]
+Loading pipeline components...: 100%|██████████| 5/5 [02:47<00:00, 43.47s/it]Loading pipeline components...: 100%|██████████| 5/5 [02:47<00:00, 33.42s/it]
