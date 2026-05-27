@@ -87,7 +87,7 @@ def run(task_id: int, exp_dir: Path):
     logger.info("Loading train activations...")
     X_train = load_activations(train_df, layer, timestep)
 
-    logger.info(f"Fitting PCA (n={N_PCA_COMPONENTS}) on train...")
+    logger.info(f"Fitting PCA (n={args.n_pca}) on train...")
     pca = IncrementalPCA(n_components=args.n_pca, batch_size=600)
     logger.info(f"PCA components: {args.n_pca} | Ridge alpha: {RIDGE_ALPHA}")
     X_train_pca = pca.fit_transform(X_train)

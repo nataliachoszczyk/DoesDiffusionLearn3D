@@ -8,7 +8,7 @@
 #SBATCH -o /net/pr2/projects/plgrid/plggzzsn2026/3d_world_in_diffusion_models/DoesDiffusionLearn3D/scripts/outputs/probe_%j.log
 #SBATCH -e /net/pr2/projects/plgrid/plggzzsn2026/3d_world_in_diffusion_models/DoesDiffusionLearn3D/scripts/outputs/probe_%j.err
 
-N_PCA=256
+N_PCA=1024
 
 PROJECT=/net/pr2/projects/plgrid/plggzzsn2026/3d_world_in_diffusion_models/DoesDiffusionLearn3D
 EXP_DIR=$PROJECT/probe_exp/pca${N_PCA}_job_${SLURM_JOB_ID}
