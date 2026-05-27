@@ -2,3 +2,4 @@
 data/activations_test/
 data/activations/
 data/final/
+*.pkl
