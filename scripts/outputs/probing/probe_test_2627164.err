@@ -1,0 +1,10 @@
+
+EnvironmentNameNotFound: Could not find conda environment: diffusion_3d_env
+You can list all discoverable environments with `conda info --envs`.
+
+
+ CUDA/12.4.0 loaded.
+Traceback (most recent call last):
+  File "/net/pr2/projects/plgrid/plggzzsn2026/3d_world_in_diffusion_models/DoesDiffusionLearn3D/src/probing/train_probe.py", line 8, in <module>
+    import numpy as np
+ModuleNotFoundError: No module named 'numpy'

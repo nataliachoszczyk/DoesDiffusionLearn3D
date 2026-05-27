@@ -1,0 +1,30 @@
+ CUDA/12.4.0 loaded.
+Traceback (most recent call last):
+  File "/net/pr2/projects/plgrid/plggzzsn2026/3d_world_in_diffusion_models/DoesDiffusionLearn3D/src/probing/train_probe.py", line 130, in <module>
+    run(args.task_id, args.exp_dir)
+  File "/net/pr2/projects/plgrid/plggzzsn2026/3d_world_in_diffusion_models/DoesDiffusionLearn3D/src/probing/train_probe.py", line 95, in run
+    X_train_pca = pca.fit_transform(X_train)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/net/pr2/projects/plgrid/plggzzsn2026/3d_world_in_diffusion_models/.conda/envs/diffusion_3d_env/lib/python3.12/site-packages/cuml/internals/api_decorators.py", line 213, in wrapper
+    ret = func(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^
+  File "/net/pr2/projects/plgrid/plggzzsn2026/3d_world_in_diffusion_models/.conda/envs/diffusion_3d_env/lib/python3.12/site-packages/cuml/internals/api_decorators.py", line 365, in dispatch
+    return self.dispatch_func(func_name, gpu_func, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/net/pr2/projects/plgrid/plggzzsn2026/3d_world_in_diffusion_models/.conda/envs/diffusion_3d_env/lib/python3.12/site-packages/cuml/internals/api_decorators.py", line 215, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "base.pyx", line 739, in cuml.internals.base.UniversalBase.dispatch_func
+  File "pca.pyx", line 530, in cuml.decomposition.pca.PCA.fit_transform
+  File "/net/pr2/projects/plgrid/plggzzsn2026/3d_world_in_diffusion_models/.conda/envs/diffusion_3d_env/lib/python3.12/site-packages/cuml/internals/api_decorators.py", line 213, in wrapper
+    ret = func(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^
+  File "/net/pr2/projects/plgrid/plggzzsn2026/3d_world_in_diffusion_models/.conda/envs/diffusion_3d_env/lib/python3.12/site-packages/cuml/internals/api_decorators.py", line 365, in dispatch
+    return self.dispatch_func(func_name, gpu_func, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/net/pr2/projects/plgrid/plggzzsn2026/3d_world_in_diffusion_models/.conda/envs/diffusion_3d_env/lib/python3.12/site-packages/cuml/internals/api_decorators.py", line 215, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "base.pyx", line 739, in cuml.internals.base.UniversalBase.dispatch_func
+  File "pca.pyx", line 491, in cuml.decomposition.pca.PCA.fit
+MemoryError: std::bad_alloc: out_of_memory: CUDA error (failed to allocate 21045339750400 bytes) at: /pyenv/versions/3.12.9/lib/python3.12/site-packages/librmm/include/rmm/mr/device/cuda_memory_resource.hpp:62: cudaErrorMemoryAllocation out of memory

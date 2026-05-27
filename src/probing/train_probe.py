@@ -7,7 +7,7 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
-from cuml.decomposition import PCA
+from sklearn.decomposition import IncrementalPCA
 from cuml.linear_model import Ridge
 from sklearn.metrics import mean_absolute_error
 
@@ -51,9 +51,9 @@ def angular_mae_azimuth(sin_pred, cos_pred, sin_true, cos_true) -> float:
     return float(np.mean(diff))
 
 
-def evaluate(model, pca, X_raw, df, logger, split_name: str) -> dict:
-    X = pca.transform(X_raw)
-    preds = model.predict(X)
+def evaluate(model, pca, X, df, logger, split_name: str, already_transformed: bool = False) -> dict:
+    X_pca = X if already_transformed else pca.transform(X)
+    preds = model.predict(X_pca)
     if hasattr(preds, "to_numpy"):
         preds = preds.to_numpy()
 
@@ -85,14 +85,11 @@ def run(task_id: int, exp_dir: Path):
 
     logger.info("Loading train activations...")
     X_train = load_activations(train_df, layer, timestep)
-    logger.info("Loading val activations...")
-    X_val   = load_activations(val_df, layer, timestep)
-    logger.info("Loading test activations...")
-    X_test  = load_activations(test_df, layer, timestep)
 
     logger.info(f"Fitting PCA (n={N_PCA_COMPONENTS}) on train...")
-    pca = PCA(n_components=N_PCA_COMPONENTS)
+    pca = IncrementalPCA(n_components=N_PCA_COMPONENTS, batch_size=600)
     X_train_pca = pca.fit_transform(X_train)
+    del X_train
 
     Y_train = train_df[["sin_azimuth", "cos_azimuth", "light_elevation_deg"]].values.astype(np.float32)
 
@@ -101,11 +98,19 @@ def run(task_id: int, exp_dir: Path):
     model.fit(X_train_pca, Y_train)
 
     results = {"layer": layer, "timestep": timestep}
-    results["train"] = evaluate(model, pca, X_train, train_df, logger, "train")
-    results["val"]   = evaluate(model, pca, X_val,   val_df,   logger, "val")
-    results["test"]  = evaluate(model, pca, X_test,  test_df,  logger, "test")
+    results["train"] = evaluate(model, pca, X_train_pca, train_df, logger, "train", already_transformed=True)
+    del X_train_pca
 
-    # save model and PCA for later hypothesis evaluation on test_cubes
+    logger.info("Loading val activations...")
+    X_val = load_activations(val_df, layer, timestep)
+    results["val"] = evaluate(model, pca, X_val, val_df, logger, "val")
+    del X_val
+
+    logger.info("Loading test activations...")
+    X_test = load_activations(test_df, layer, timestep)
+    results["test"] = evaluate(model, pca, X_test, test_df, logger, "test")
+    del X_test
+
     model_path = exp_dir / f"{layer}_{timestep}_model.pkl"
     pca_path   = exp_dir / f"{layer}_{timestep}_pca.pkl"
     with open(model_path, "wb") as f:
