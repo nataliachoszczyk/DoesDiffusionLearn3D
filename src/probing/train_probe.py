@@ -8,7 +8,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 from sklearn.decomposition import IncrementalPCA
-from cuml.linear_model import Ridge
+from sklearn.linear_model import Ridge
 from sklearn.metrics import mean_absolute_error
 
 LAYERS = ["layer_04", "layer_10", "layer_18"]
@@ -17,7 +17,6 @@ COMBINATIONS = [(l, t) for l in LAYERS for t in TIMESTEPS]
 
 ACTIVATIONS_ROOT = Path("data/activations")
 SPLITS_DIR = Path("data/splits")
-N_PCA_COMPONENTS = 512
 RIDGE_ALPHA = 1.0
 
 
@@ -38,9 +37,12 @@ def load_activations(df: pd.DataFrame, layer: str, timestep: str) -> np.ndarray:
     for image_id, shape in zip(df["image_id"], df["shape"]):
         fname = f"{image_id}_l{layer_num}_t{t_num}.npy"
         path = ACTIVATIONS_ROOT / layer / timestep / shape / fname
-        arr = np.load(path)           # (1, 1024, 2240)
-        arrays.append(arr.reshape(-1))  # (2293760,)
-    return np.stack(arrays, axis=0).astype(np.float32)  # (N, 2293760)
+        arr = np.load(path).squeeze(0)          # (1024, 2240) -> (1024, 2240)
+        arr = arr.reshape(32, 32, 2240)          # spatial grid
+        # 4x4 avg pool: (32,32,2240) -> (8,8,2240)
+        arr = arr.reshape(8, 4, 8, 4, 2240).mean(axis=(1, 3))
+        arrays.append(arr.reshape(-1))           # (143360,)
+    return np.stack(arrays, axis=0).astype(np.float32)  # (N, 143360)
 
 
 def angular_mae_azimuth(sin_pred, cos_pred, sin_true, cos_true) -> float:
@@ -77,7 +79,6 @@ def run(task_id: int, exp_dir: Path):
     log_path = exp_dir / f"{layer}_{timestep}.log"
     logger = setup_logger(log_path)
     logger.info(f"=== task {task_id}: {layer} / {timestep} ===")
-    logger.info(f"PCA components: {N_PCA_COMPONENTS} | Ridge alpha: {RIDGE_ALPHA}")
 
     train_df = pd.read_csv(SPLITS_DIR / "train.csv")
     val_df   = pd.read_csv(SPLITS_DIR / "val.csv")
@@ -87,7 +88,8 @@ def run(task_id: int, exp_dir: Path):
     X_train = load_activations(train_df, layer, timestep)
 
     logger.info(f"Fitting PCA (n={N_PCA_COMPONENTS}) on train...")
-    pca = IncrementalPCA(n_components=N_PCA_COMPONENTS, batch_size=600)
+    pca = IncrementalPCA(n_components=args.n_pca, batch_size=600)
+    logger.info(f"PCA components: {args.n_pca} | Ridge alpha: {RIDGE_ALPHA}")
     X_train_pca = pca.fit_transform(X_train)
     del X_train
 
@@ -129,6 +131,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--task_id", type=int, required=True)
     parser.add_argument("--exp_dir", type=Path, required=True)
+    parser.add_argument("--n_pca", type=int, default=512)
     args = parser.parse_args()
 
     args.exp_dir.mkdir(parents=True, exist_ok=True)

@@ -1,0 +1,26 @@
+ CUDA/12.4.0 loaded.
+Traceback (most recent call last):
+  File "/net/pr2/projects/plgrid/plggzzsn2026/3d_world_in_diffusion_models/DoesDiffusionLearn3D/src/probing/train_probe.py", line 138, in <module>
+    run(args.task_id, args.exp_dir)
+  File "/net/pr2/projects/plgrid/plggzzsn2026/3d_world_in_diffusion_models/DoesDiffusionLearn3D/src/probing/train_probe.py", line 101, in run
+    model.fit(X_train_pca, Y_train)
+  File "/net/pr2/projects/plgrid/plggzzsn2026/3d_world_in_diffusion_models/.conda/envs/diffusion_3d_env/lib/python3.12/site-packages/cuml/internals/api_decorators.py", line 213, in wrapper
+    ret = func(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^
+  File "/net/pr2/projects/plgrid/plggzzsn2026/3d_world_in_diffusion_models/.conda/envs/diffusion_3d_env/lib/python3.12/site-packages/cuml/internals/api_decorators.py", line 365, in dispatch
+    return self.dispatch_func(func_name, gpu_func, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/net/pr2/projects/plgrid/plggzzsn2026/3d_world_in_diffusion_models/.conda/envs/diffusion_3d_env/lib/python3.12/site-packages/cuml/internals/api_decorators.py", line 215, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "base.pyx", line 739, in cuml.internals.base.UniversalBase.dispatch_func
+  File "ridge.pyx", line 282, in cuml.linear_model.ridge.Ridge.fit
+  File "/net/pr2/projects/plgrid/plggzzsn2026/3d_world_in_diffusion_models/.conda/envs/diffusion_3d_env/lib/python3.12/site-packages/cuml/internals/input_utils.py", line 427, in input_to_cuml_array
+    arr = CumlArray.from_input(
+          ^^^^^^^^^^^^^^^^^^^^^
+  File "/net/pr2/projects/plgrid/plggzzsn2026/3d_world_in_diffusion_models/.conda/envs/diffusion_3d_env/lib/python3.12/site-packages/cuml/internals/memory_utils.py", line 87, in cupy_rmm_wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/net/pr2/projects/plgrid/plggzzsn2026/3d_world_in_diffusion_models/.conda/envs/diffusion_3d_env/lib/python3.12/site-packages/cuml/internals/array.py", line 1240, in from_input
+    raise ValueError(
+ValueError: Expected 1 columns but got 3 columns.
