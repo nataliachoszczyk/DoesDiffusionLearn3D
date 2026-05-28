@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 """
 Overlay predicted and ground-truth shadow direction arrows on all images.
-Arrow originates from detected purple object centroid, points toward shadow.
+Uses pixel_coords from scene JSON for arrow origin.
+Uses actual 3d_coords of object relative to lamp for correct shadow direction.
 """
 
 import argparse
+import json
 import logging
 import math
 import sys
@@ -18,8 +20,9 @@ import matplotlib.pyplot as plt
 from PIL import Image
 
 
-IMAGES_DIR = Path("data/final/images")
-SPLITS_DIR = Path("data/splits")
+IMAGES_DIR  = Path("data/final/images")
+SPLITS_DIR  = Path("data/splits")
+SCENES_DIR  = Path("data/final/scenes")
 
 AZ_RANGE = 360.0
 EL_RANGE = 45.0
@@ -30,50 +33,52 @@ _CAM_RIGHT = np.cross(_CAM_FWD, np.array([0., 0., 1.]))
 _CAM_RIGHT /= np.linalg.norm(_CAM_RIGHT)
 _CAM_UP    = np.cross(_CAM_RIGHT, _CAM_FWD)
 
+LIGHT_RADIUS = 5.0
 
-def az_el_to_shadow_2d(az_deg: float, el_deg: float) -> tuple[float, float]:
+
+def az_el_to_lamp_pos(az_deg: float, el_deg: float, r: float = LIGHT_RADIUS) -> np.ndarray:
     az = math.radians(az_deg)
     el = math.radians(el_deg)
-    lx = math.cos(el) * math.cos(az)
-    ly = math.cos(el) * math.sin(az)
-    lz = math.sin(el)
-    shadow = np.array([-lx, -ly, -lz])
-    ir = float(np.dot(shadow, _CAM_RIGHT))
-    iu = float(np.dot(shadow, _CAM_UP))
+    return np.array([
+        r * math.cos(el) * math.cos(az),
+        r * math.cos(el) * math.sin(az),
+        r * math.sin(el),
+    ])
+
+
+def shadow_dir_2d(obj_3d: np.ndarray, lamp_pos: np.ndarray) -> tuple[float, float]:
+    """
+    Shadow direction = from lamp through object, projected onto ground (z=0),
+    then projected onto image axes.
+    """
+    # vector from lamp to object
+    to_obj = obj_3d - lamp_pos
+    # project onto ground plane (z=0): the shadow tip on the floor
+    # parametric: lamp + t*(to_obj) where z=0 -> t = -lamp_z / to_obj_z
+    if abs(to_obj[2]) < 1e-6:
+        shadow_ground = np.array([to_obj[0], to_obj[1], 0.0])
+    else:
+        t = -lamp_pos[2] / to_obj[2]
+        shadow_tip = lamp_pos + t * to_obj
+        shadow_ground = shadow_tip - np.array([obj_3d[0], obj_3d[1], 0.0])
+
+    # project onto image
+    ir = float(np.dot(shadow_ground, _CAM_RIGHT))
+    iu = float(np.dot(shadow_ground, _CAM_UP))
     length = math.sqrt(ir**2 + iu**2) + 1e-9
     return ir / length, iu / length
 
 
-def find_object_centroid(img_array: np.ndarray) -> tuple[float, float] | None:
-    """Detect purple object centroid via HSV color mask. Returns (cx, cy) in pixels."""
-    r = img_array[:, :, 0].astype(np.float32)
-    g = img_array[:, :, 1].astype(np.float32)
-    b = img_array[:, :, 2].astype(np.float32)
-
-    maxc = np.maximum(np.maximum(r, g), b)
-    minc = np.minimum(np.minimum(r, g), b)
-    delta = maxc - minc + 1e-6
-
-    # hue
-    hue = np.zeros_like(r)
-    m = maxc == r
-    hue[m] = (60 * ((g[m] - b[m]) / delta[m])) % 360
-    m = maxc == g
-    hue[m] = 60 * ((b[m] - r[m]) / delta[m]) + 120
-    m = maxc == b
-    hue[m] = 60 * ((r[m] - g[m]) / delta[m]) + 240
-
-    sat = np.where(maxc > 1e-3, delta / (maxc + 1e-6), 0.0)
-    val = maxc / 255.0
-
-    # purple/violet: hue 240-320, sat>0.25, val>0.15
-    mask = (hue >= 240) & (hue <= 320) & (sat > 0.25) & (val > 0.15)
-
-    if mask.sum() < 100:
+def load_scene(image_id: str, shape: str) -> dict | None:
+    # scene JSON: same name as image but .json, under SCENES_DIR/shape/
+    p = SCENES_DIR / shape / f"{image_id}.json"
+    if not p.exists():
+        # fallback: flat scenes dir
+        p = SCENES_DIR / f"{image_id}.json"
+    if not p.exists():
         return None
-
-    ys, xs = np.where(mask)
-    return float(xs.mean()), float(ys.mean())
+    with open(p) as f:
+        return json.load(f)
 
 
 def setup_logger(log_path: Path) -> logging.Logger:
@@ -91,23 +96,44 @@ def setup_logger(log_path: Path) -> logging.Logger:
 
 def save_image(row: dict, out_path: Path):
     img = Image.open(row["img_path"]).convert("RGB")
-    arr = np.array(img)
     W, H = img.size
 
-    centroid = find_object_centroid(arr)
-    cx, cy = centroid if centroid is not None else (W / 2, H / 2)
+    # origin of arrow: pixel_coords from JSON if available, else image center
+    if row["pixel_coords"] is not None:
+        cx, cy = row["pixel_coords"][0], row["pixel_coords"][1]
+    else:
+        cx, cy = W / 2.0, H / 2.0
+
     radius = W * 0.28
+
+    obj_3d   = row["obj_3d"]
+    gt_lamp  = az_el_to_lamp_pos(row["gt_az"],   row["gt_el"])
+    pred_lamp= az_el_to_lamp_pos(row["pred_az"],  row["pred_el"])
+
+    if obj_3d is not None:
+        gt_ir,   gt_iu   = shadow_dir_2d(obj_3d, gt_lamp)
+        pred_ir, pred_iu = shadow_dir_2d(obj_3d, pred_lamp)
+    else:
+        # fallback: object at origin
+        def _simple(az, el):
+            az_r = math.radians(az); el_r = math.radians(el)
+            lx = math.cos(el_r)*math.cos(az_r)
+            ly = math.cos(el_r)*math.sin(az_r)
+            lz = math.sin(el_r)
+            s = np.array([-lx, -ly, -lz])
+            ir = float(np.dot(s, _CAM_RIGHT))
+            iu = float(np.dot(s, _CAM_UP))
+            l = math.sqrt(ir**2 + iu**2) + 1e-9
+            return ir/l, iu/l
+        gt_ir,   gt_iu   = _simple(row["gt_az"],   row["gt_el"])
+        pred_ir, pred_iu = _simple(row["pred_az"],  row["pred_el"])
 
     fig, ax = plt.subplots(figsize=(5, 5))
     ax.imshow(img)
     ax.axis("off")
 
-    # mark centroid
     ax.plot(cx, cy, "o", color="white", markersize=5,
             markeredgecolor="black", markeredgewidth=1.0, zorder=5)
-
-    gt_ir,   gt_iu   = az_el_to_shadow_2d(row["gt_az"],   row["gt_el"])
-    pred_ir, pred_iu = az_el_to_shadow_2d(row["pred_az"], row["pred_el"])
 
     for ir, iu, color, label in [
         (gt_ir,   gt_iu,   "#00e676", "GT"),
@@ -154,7 +180,7 @@ def process_split(split: str, preds_csv: Path, out_dir: Path, logger: logging.Lo
     out_dir.mkdir(parents=True, exist_ok=True)
     logger.info(f"\n=== {split}: {len(df)} samples ===")
 
-    missing, saved, no_centroid = 0, 0, 0
+    missing, saved, no_scene = 0, 0, 0
     for _, r in df.iterrows():
         img_path = IMAGES_DIR / r["shape"] / f"{r['image_id']}.png"
         if not img_path.exists():
@@ -162,27 +188,35 @@ def process_split(split: str, preds_csv: Path, out_dir: Path, logger: logging.Lo
             missing += 1
             continue
 
+        scene = load_scene(r["image_id"], r["shape"])
+        if scene is not None and scene.get("objects"):
+            obj      = scene["objects"][0]
+            obj_3d   = np.array(obj["3d_coords"])
+            px_coords= obj["pixel_coords"]  # [px_x, px_y, depth]
+        else:
+            obj_3d    = None
+            px_coords = None
+            no_scene += 1
+
         az_err = r["az_error_deg"]
         el_err = r["el_error_deg"]
         score  = az_err / AZ_RANGE + el_err / EL_RANGE
         fname  = f"{r['image_id']}_az{az_err:.1f}_el{el_err:.1f}_s{score:.4f}.png"
 
-        img_arr = np.array(Image.open(img_path).convert("RGB"))
-        if find_object_centroid(img_arr) is None:
-            no_centroid += 1
-
         save_image({
-            "img_path": img_path,
-            "gt_az":   r["light_azimuth_deg"],
-            "gt_el":   r["light_elevation_deg"],
-            "pred_az": r["pred_azimuth_deg"],
-            "pred_el": r["pred_elevation_deg"],
-            "az_err":  az_err,
-            "el_err":  el_err,
+            "img_path":    img_path,
+            "gt_az":       r["light_azimuth_deg"],
+            "gt_el":       r["light_elevation_deg"],
+            "pred_az":     r["pred_azimuth_deg"],
+            "pred_el":     r["pred_elevation_deg"],
+            "az_err":      az_err,
+            "el_err":      el_err,
+            "obj_3d":      obj_3d,
+            "pixel_coords":px_coords,
         }, out_dir / fname)
         saved += 1
 
-    logger.info(f"  saved={saved}  missing={missing}  no_centroid={no_centroid}  output={out_dir}")
+    logger.info(f"  saved={saved}  missing={missing}  no_scene={no_scene}  output={out_dir}")
 
     df_sorted = df.sort_values("az_error_deg").reset_index(drop=True)
     logger.info("  Top 5 best az_err:  " +
@@ -195,19 +229,18 @@ def process_split(split: str, preds_csv: Path, out_dir: Path, logger: logging.Lo
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--layer",           default="layer_10")
-    parser.add_argument("--timestep",        default="t_200")
+    parser.add_argument("--layer",    default="layer_10")
+    parser.add_argument("--timestep", default="t_200")
     parser.add_argument("--cubes_preds_csv", type=Path,
         default=Path("probe_exp/test_cubes_eval_all/layer_10_t_200/test_cubes_predictions.csv"))
-    parser.add_argument("--test_preds_csv",  type=Path,
+    parser.add_argument("--test_preds_csv", type=Path,
         default=Path("probe_exp/pca256_job_2628839/layer_10_t_200_test_predictions.csv"))
-    parser.add_argument("--out_dir",         type=Path,
+    parser.add_argument("--out_dir", type=Path,
         default=Path("probe_exp/test_cubes_eval_all/summary/pred_viz"))
     args = parser.parse_args()
 
     args.out_dir.mkdir(parents=True, exist_ok=True)
     logger = setup_logger(args.out_dir / "visualize.log")
-    logger.info(f"Config: {args.layer} / {args.timestep}")
 
     process_split("test_cubes", args.cubes_preds_csv, args.out_dir / "test_cubes", logger)
     process_split("test",       args.test_preds_csv,  args.out_dir / "test",       logger)

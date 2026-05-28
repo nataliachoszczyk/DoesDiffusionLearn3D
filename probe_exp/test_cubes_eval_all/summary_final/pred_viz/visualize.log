@@ -1,0 +1,12 @@
+18:08:10  
+=== test_cubes: 1000 samples ===
+18:15:54    saved=1000  missing=0  no_scene=0  output=probe_exp/test_cubes_eval_all/summary_final/pred_viz/test_cubes
+18:15:54    Top 5 best az_err:  SmoothCube_v2_new_000362(0.0)  SmoothCube_v2_new_000613(0.0)  SmoothCube_v2_new_000471(0.0)  SmoothCube_v2_new_000317(0.1)  SmoothCube_v2_new_000160(0.1)
+18:15:54    Top 5 worst az_err: SmoothCube_v2_new_000629(115.2)  SmoothCube_v2_new_000999(121.7)  SmoothCube_v2_new_000130(127.6)  SmoothCube_v2_new_000371(128.1)  SmoothCube_v2_new_000338(167.2)
+18:15:54  
+=== test: 200 samples ===
+18:17:18    saved=200  missing=0  no_scene=0  output=probe_exp/test_cubes_eval_all/summary_final/pred_viz/test
+18:17:18    Top 5 best az_err:  Sphere_new_000512(0.1)  Sphere_new_000883(0.1)  Sphere_new_000945(0.2)  SmoothCylinder_new_000295(0.3)  Sphere_new_000390(0.4)
+18:17:18    Top 5 worst az_err: Sphere_new_000094(41.5)  Sphere_new_000461(44.0)  Sphere_new_000872(44.2)  SmoothCylinder_new_000776(65.3)  SmoothCylinder_new_000686(142.1)
+18:17:18  
+=== Done ===
