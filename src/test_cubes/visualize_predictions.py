@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 """
-Overlay predicted and ground-truth light direction arrows on all images
-from test and test_cubes splits. Saves one PNG per image.
-Arrow points FROM object center TOWARD shadow (opposite of lamp position).
+Overlay predicted and ground-truth shadow direction arrows on all images.
+Arrow originates from detected purple object centroid, points toward shadow.
 """
 
 import argparse
@@ -11,6 +10,7 @@ import math
 import sys
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 import matplotlib
 matplotlib.use("Agg")
@@ -24,8 +24,6 @@ SPLITS_DIR = Path("data/splits")
 AZ_RANGE = 360.0
 EL_RANGE = 45.0
 
-import numpy as np
-
 _CAM_POS   = np.array([7.358891, -6.925791, 4.959234])
 _CAM_FWD   = -_CAM_POS / np.linalg.norm(_CAM_POS)
 _CAM_RIGHT = np.cross(_CAM_FWD, np.array([0., 0., 1.]))
@@ -33,20 +31,49 @@ _CAM_RIGHT /= np.linalg.norm(_CAM_RIGHT)
 _CAM_UP    = np.cross(_CAM_RIGHT, _CAM_FWD)
 
 
-def az_el_to_shadow_2d(az_deg, el_deg):
+def az_el_to_shadow_2d(az_deg: float, el_deg: float) -> tuple[float, float]:
     az = math.radians(az_deg)
     el = math.radians(el_deg)
-    # full 3D lamp direction (unit vector)
     lx = math.cos(el) * math.cos(az)
     ly = math.cos(el) * math.sin(az)
     lz = math.sin(el)
-    lamp_3d = np.array([lx, ly, lz])
-    # shadow direction = opposite of lamp, then project onto image
-    shadow = -lamp_3d
+    shadow = np.array([-lx, -ly, -lz])
     ir = float(np.dot(shadow, _CAM_RIGHT))
     iu = float(np.dot(shadow, _CAM_UP))
     length = math.sqrt(ir**2 + iu**2) + 1e-9
     return ir / length, iu / length
+
+
+def find_object_centroid(img_array: np.ndarray) -> tuple[float, float] | None:
+    """Detect purple object centroid via HSV color mask. Returns (cx, cy) in pixels."""
+    r = img_array[:, :, 0].astype(np.float32)
+    g = img_array[:, :, 1].astype(np.float32)
+    b = img_array[:, :, 2].astype(np.float32)
+
+    maxc = np.maximum(np.maximum(r, g), b)
+    minc = np.minimum(np.minimum(r, g), b)
+    delta = maxc - minc + 1e-6
+
+    # hue
+    hue = np.zeros_like(r)
+    m = maxc == r
+    hue[m] = (60 * ((g[m] - b[m]) / delta[m])) % 360
+    m = maxc == g
+    hue[m] = 60 * ((b[m] - r[m]) / delta[m]) + 120
+    m = maxc == b
+    hue[m] = 60 * ((r[m] - g[m]) / delta[m]) + 240
+
+    sat = np.where(maxc > 1e-3, delta / (maxc + 1e-6), 0.0)
+    val = maxc / 255.0
+
+    # purple/violet: hue 240-320, sat>0.25, val>0.15
+    mask = (hue >= 240) & (hue <= 320) & (sat > 0.25) & (val > 0.15)
+
+    if mask.sum() < 100:
+        return None
+
+    ys, xs = np.where(mask)
+    return float(xs.mean()), float(ys.mean())
 
 
 def setup_logger(log_path: Path) -> logging.Logger:
@@ -64,26 +91,31 @@ def setup_logger(log_path: Path) -> logging.Logger:
 
 def save_image(row: dict, out_path: Path):
     img = Image.open(row["img_path"]).convert("RGB")
+    arr = np.array(img)
     W, H = img.size
+
+    centroid = find_object_centroid(arr)
+    cx, cy = centroid if centroid is not None else (W / 2, H / 2)
+    radius = W * 0.28
 
     fig, ax = plt.subplots(figsize=(5, 5))
     ax.imshow(img)
     ax.axis("off")
 
-    cx, cy = W / 2, H / 2
-    radius = W * 0.28
+    # mark centroid
+    ax.plot(cx, cy, "o", color="white", markersize=5,
+            markeredgecolor="black", markeredgewidth=1.0, zorder=5)
 
-    gt_dx, gt_dy   = az_el_to_shadow_2d(row["gt_az"],   row["gt_el"])
-    pred_dx, pred_dy = az_el_to_shadow_2d(row["pred_az"], row["pred_el"])
+    gt_ir,   gt_iu   = az_el_to_shadow_2d(row["gt_az"],   row["gt_el"])
+    pred_ir, pred_iu = az_el_to_shadow_2d(row["pred_az"], row["pred_el"])
 
-    # dy is image-up (+), but matplotlib Y axis points DOWN -> negate dy
-    for dx, dy, color, label in [
-        (gt_dx,   gt_dy,   "#00e676", "GT"),
-        (pred_dx, pred_dy, "#ff1744", "Pred"),
+    for ir, iu, color, label in [
+        (gt_ir,   gt_iu,   "#00e676", "GT"),
+        (pred_ir, pred_iu, "#ff1744", "Pred"),
     ]:
         ax.annotate(
             "",
-            xy=(cx + dx * radius, cy - dy * radius),   # -dy: image Y is flipped
+            xy=(cx + ir * radius, cy - iu * radius),
             xytext=(cx, cy),
             arrowprops=dict(
                 arrowstyle="->, head_width=0.5, head_length=0.4",
@@ -122,7 +154,7 @@ def process_split(split: str, preds_csv: Path, out_dir: Path, logger: logging.Lo
     out_dir.mkdir(parents=True, exist_ok=True)
     logger.info(f"\n=== {split}: {len(df)} samples ===")
 
-    missing, saved = 0, 0
+    missing, saved, no_centroid = 0, 0, 0
     for _, r in df.iterrows():
         img_path = IMAGES_DIR / r["shape"] / f"{r['image_id']}.png"
         if not img_path.exists():
@@ -135,6 +167,10 @@ def process_split(split: str, preds_csv: Path, out_dir: Path, logger: logging.Lo
         score  = az_err / AZ_RANGE + el_err / EL_RANGE
         fname  = f"{r['image_id']}_az{az_err:.1f}_el{el_err:.1f}_s{score:.4f}.png"
 
+        img_arr = np.array(Image.open(img_path).convert("RGB"))
+        if find_object_centroid(img_arr) is None:
+            no_centroid += 1
+
         save_image({
             "img_path": img_path,
             "gt_az":   r["light_azimuth_deg"],
@@ -146,7 +182,7 @@ def process_split(split: str, preds_csv: Path, out_dir: Path, logger: logging.Lo
         }, out_dir / fname)
         saved += 1
 
-    logger.info(f"  saved={saved}  missing={missing}  output={out_dir}")
+    logger.info(f"  saved={saved}  missing={missing}  no_centroid={no_centroid}  output={out_dir}")
 
     df_sorted = df.sort_values("az_error_deg").reset_index(drop=True)
     logger.info("  Top 5 best az_err:  " +
