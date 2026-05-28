@@ -1,0 +1,20 @@
+{
+  "layer": "layer_04",
+  "timestep": "t_200",
+  "split": "test_cubes",
+  "n_samples": 1000,
+  "probe": {
+    "mae_azimuth_deg": 14.192101038253957,
+    "mae_elevation_deg": 7.417551663449911,
+    "median_az_error": 9.828730076588744,
+    "p90_az_error": 30.216716693381336,
+    "median_el_error": 6.46003673735655,
+    "p90_el_error": 14.6790729229886
+  },
+  "baselines": {
+    "random_mae_azimuth_deg": 90.27410440708113,
+    "mean_mae_azimuth_deg": 88.86760000000001,
+    "random_mae_elevation_deg": 15.57481633926781,
+    "mean_mae_elevation_deg": 11.347355111111112
+  }
+}

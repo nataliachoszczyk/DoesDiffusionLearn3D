@@ -1,0 +1,19 @@
+11:14:56 Loading model from probe_exp/pca256_job_2628839/layer_18_t_800_model.pkl
+11:14:57 Loaded prior results from probe_exp/pca256_job_2628839/layer_18_t_800_results.json
+11:14:57 test_cubes samples: 1000
+11:14:57 Loading test_cubes activations...
+11:17:39 
+=======================================================
+11:17:39   TEST GENERALIZATION: layer_18 / t_800
+11:17:39 =======================================================
+11:17:39   Probe  — azimuth MAE: 17.65°  | elevation MAE: 6.42°
+11:17:39   Baseline random     : 89.79°  | 15.02°
+11:17:39   Baseline mean       : 88.87°  | 11.35°
+11:17:39 =======================================================
+11:17:39   Improvement vs random: 72.13° azimuth
+11:17:39   Improvement vs mean:   71.21° azimuth
+11:17:39 Results saved to probe_exp/test_cubes_eval_all/layer_18_t_800/test_cubes_results.json
+11:17:39 Per-sample predictions saved to probe_exp/test_cubes_eval_all/layer_18_t_800/test_cubes_predictions.csv
+11:17:39 Summary TXT saved to probe_exp/test_cubes_eval_all/layer_18_t_800/results_summary.txt
+11:17:40 Plots saved.
+11:17:40 All outputs in: probe_exp/test_cubes_eval_all/layer_18_t_800

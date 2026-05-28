@@ -1,5 +1,0 @@
-=== layer_04 / t_200 ===
-Loading model from probe_exp/pca256_job_2628839/layer_04_t_200_model.pkl
-Loaded prior results from probe_exp/pca256_job_2628839/layer_04_t_200_results.json
-test_cubes samples: 1000
-Loading test_cubes activations...

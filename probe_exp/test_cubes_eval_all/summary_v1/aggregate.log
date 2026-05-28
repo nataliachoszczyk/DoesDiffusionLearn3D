@@ -1,0 +1,39 @@
+13:09:35  === Aggregating test_cubes results ===
+13:09:35  EVAL_DIR  : probe_exp/test_cubes_eval_all
+13:09:35  PRIOR_DIR : probe_exp/pca256_job_2628839
+13:09:35  OUT_DIR   : probe_exp/test_cubes_eval_all/summary
+13:09:35    layer_04 / t_200  cubes_az=14.19°  cubes_el=7.42°  gap_az=-0.14°  gap_el=+0.29°
+13:09:35    layer_04 / t_500  cubes_az=15.65°  cubes_el=7.15°  gap_az=+0.45°  gap_el=+0.13°
+13:09:35    layer_04 / t_800  cubes_az=19.03°  cubes_el=7.07°  gap_az=-0.13°  gap_el=+0.50°
+13:09:36    layer_10 / t_200  cubes_az=14.01°  cubes_el=6.94°  gap_az=+0.99°  gap_el=+0.06°
+13:09:36    layer_10 / t_500  cubes_az=15.27°  cubes_el=7.56°  gap_az=-0.01°  gap_el=-0.42°
+13:09:36    layer_10 / t_800  cubes_az=16.82°  cubes_el=6.14°  gap_az=+1.96°  gap_el=+0.11°
+13:09:36    layer_18 / t_200  cubes_az=14.84°  cubes_el=6.87°  gap_az=+1.41°  gap_el=-0.21°
+13:09:36    layer_18 / t_500  cubes_az=14.88°  cubes_el=7.79°  gap_az=+0.21°  gap_el=-0.24°
+13:09:36    layer_18 / t_800  cubes_az=17.65°  cubes_el=6.42°  gap_az=-0.61°  gap_el=-0.18°
+13:09:36  
+CSV saved: probe_exp/test_cubes_eval_all/summary/test_cubes_all_results.csv
+13:09:36  
+   layer timestep   test_az  test_el  cubes_az  cubes_el  gap_az  gap_el  median_az    p90_az  median_el    p90_el
+layer_04    t_200 14.332686 7.132044 14.192101  7.417552 -0.1406  0.2855   9.828730 30.216717   6.460037 14.679073
+layer_04    t_500 15.196803 7.018773 15.651098  7.150681  0.4543  0.1319  10.417210 33.647687   6.388191 14.233314
+layer_04    t_800 19.160817 6.572418 19.032422  7.074671 -0.1284  0.5023  13.335311 41.244125   5.839942 14.759210
+layer_10    t_200 13.013948 6.883432 14.006673  6.940421  0.9927  0.0570  10.150357 30.724064   6.227837 14.001719
+layer_10    t_500 15.274260 7.981819 15.267970  7.563114 -0.0063 -0.4187  10.385574 34.556492   6.725670 15.007298
+layer_10    t_800 14.867285 6.029169 16.824153  6.139963  1.9569  0.1108  12.229147 35.683220   5.272252 12.661026
+layer_18    t_200 13.422587 7.082533 14.835262  6.869042  1.4127 -0.2135  10.331505 32.080453   5.939083 13.551231
+layer_18    t_500 14.673520 8.031875 14.882856  7.794744  0.2093 -0.2371  10.241289 33.289260   7.225797 15.271954
+layer_18    t_800 18.266804 6.607658 17.653067  6.424097 -0.6137 -0.1836  12.396777 37.213075   5.176288 13.352322
+13:09:36  Saved heatmap: probe_exp/test_cubes_eval_all/summary/heatmap_cubes_az.png
+13:09:37  Saved heatmap: probe_exp/test_cubes_eval_all/summary/heatmap_cubes_el.png
+13:09:37  Saved heatmap: probe_exp/test_cubes_eval_all/summary/heatmap_gap_az.png
+13:09:37  Saved heatmap: probe_exp/test_cubes_eval_all/summary/heatmap_gap_el.png
+13:09:37  Saved scatter: probe_exp/test_cubes_eval_all/summary/scatter_az_vs_el.png
+13:09:37  
+=== Best config (lowest cubes_az MAE) ===
+13:09:37    layer_10 / t_200  cubes_az=14.01°  cubes_el=6.94°  gap_az=+0.99°
+13:09:37  
+=== Best config (lowest generalization gap Az) ===
+13:09:37    layer_18 / t_800  cubes_az=17.65°  cubes_el=6.42°  gap_az=-0.61°
+13:09:37  
+=== Done ===
