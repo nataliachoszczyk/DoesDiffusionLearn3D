@@ -1,0 +1,54 @@
+========================================================================
+  RESULTS SUMMARY — SANA-1.6B LINEAR PROBING EXPERIMENT
+========================================================================
+
+  Config   :  layer_10 / t_200 / n_pca=256
+  Split    :  test_cubes  (SmoothCube_v2, unseen during training)
+  N        :  1000 samples
+
+------------------------------------------------------------------------
+  PROBE PERFORMANCE ON TEST_CUBES
+------------------------------------------------------------------------
+  Metric                            Azimuth    Elevation
+  ----------------------------------------------------------------------
+  MAE (mean)                         14.01°        6.94°
+  MAE (median)                       10.15°        6.23°
+  MAE (p90)                          30.72°       14.00°
+
+------------------------------------------------------------------------
+  BASELINE COMPARISON
+------------------------------------------------------------------------
+  Method                             Az MAE       El MAE
+  ----------------------------------------------------------------------
+  Probe  (Ridge + PCA)               14.01°        6.94°
+  Baseline: random                   90.03°       14.38°
+  Baseline: always-mean              88.87°       11.35°
+
+  Improvement vs random  :  +76.03° azimuth
+  Improvement vs mean    :  +74.86° azimuth
+
+------------------------------------------------------------------------
+  GENERALIZATION ACROSS SPLITS
+------------------------------------------------------------------------
+  Split                  Shapes                       Az MAE     El MAE
+  ----------------------------------------------------------------------
+  train                  Sphere, SmoothCylinder         10.61°        6.02°
+  val                    Sphere, SmoothCylinder         14.80°        7.47°
+  test                   Sphere, SmoothCylinder         13.01°        6.88°
+  test_cubes  (*)        SmoothCube_v2                  14.01°        6.94°
+
+  (*) Zero-shot generalization — SmoothCube_v2 never seen during training
+
+------------------------------------------------------------------------
+  INTERPRETATION
+------------------------------------------------------------------------
+  The probe achieves 14.0° mean azimuth MAE on unseen cube geometry,
+  compared to 90.0° for a random baseline — an improvement of
+  76.0°. The median error is only
+  10.2°, confirming that the majority of predictions are
+  well-localised. Performance is consistent across train / val / test /
+  test_cubes splits, indicating that layer_10 at t_200 encodes a
+  shape-invariant representation of light direction — consistent with
+  the 3D-awareness hypothesis.
+
+========================================================================
