@@ -1,0 +1,17 @@
+Loading model from ridge_model/layer_10_t_200_model.pkl
+No prior results JSON found — generalization table will show N/A for train/val/test.
+test_cubes samples: 1000
+Loading test_cubes activations...
+=======================================================
+  TEST GENERALIZATION: layer_10 / t_200
+=======================================================
+  Probe  — azimuth MAE: 14.01°  | elevation MAE: 6.94°
+  Baseline random     : 89.96°  | 14.76°
+  Baseline mean       : 88.87°  | 11.35°
+=======================================================
+  Improvement vs random: 75.95° azimuth
+  Improvement vs mean:   74.86° azimuth
+Results saved to probe_exp/test_cubes_eval/test_cubes_results.json
+Summary TXT saved to probe_exp/test_cubes_eval/results_summary.txt
+Plots saved.
+All outputs in: probe_exp/test_cubes_eval

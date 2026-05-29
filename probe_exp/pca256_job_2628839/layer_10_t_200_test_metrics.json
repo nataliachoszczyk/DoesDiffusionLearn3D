@@ -1,0 +1,12 @@
+{
+  "split": "test",
+  "layer": "layer_10",
+  "timestep": "t_200",
+  "n_samples": 200,
+  "mae_azimuth_deg": 13.013947822599365,
+  "mae_elevation_deg": 6.883431512790586,
+  "median_az_error": 10.108061630249939,
+  "median_el_error": 6.296300214908044,
+  "p90_az_error": 26.117824292252607,
+  "p90_el_error": 14.18662074332581
+}

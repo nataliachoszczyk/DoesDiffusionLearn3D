@@ -1,0 +1,40 @@
+{
+  "best_alpha_cv": 1000.0,
+  "results": [
+    {
+      "alpha": 0.001,
+      "mae_azimuth": 17.839949643138766,
+      "mae_elevation": 7.765678300448701
+    },
+    {
+      "alpha": 0.01,
+      "mae_azimuth": 17.839949640921294,
+      "mae_elevation": 7.765678301219791
+    },
+    {
+      "alpha": 0.1,
+      "mae_azimuth": 17.83994961874651,
+      "mae_elevation": 7.765678308930705
+    },
+    {
+      "alpha": 1.0,
+      "mae_azimuth": 17.839949396998737,
+      "mae_elevation": 7.765678386039831
+    },
+    {
+      "alpha": 10.0,
+      "mae_azimuth": 17.83994717952317,
+      "mae_elevation": 7.765679157130258
+    },
+    {
+      "alpha": 100.0,
+      "mae_azimuth": 17.839925004985847,
+      "mae_elevation": 7.765686867950703
+    },
+    {
+      "alpha": 1000.0,
+      "mae_azimuth": 17.839703281446003,
+      "mae_elevation": 7.76576396777648
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+ CUDA/12.4.0 loaded.
+Traceback (most recent call last):
+  File "/net/pr2/projects/plgrid/plggzzsn2026/3d_world_in_diffusion_models/DoesDiffusionLearn3D/src/probing/train_probe.py", line 135, in <module>
+    run(args.task_id, args.exp_dir)
+  File "/net/pr2/projects/plgrid/plggzzsn2026/3d_world_in_diffusion_models/DoesDiffusionLearn3D/src/probing/train_probe.py", line 91, in run
+    X_train_pca = pca.fit_transform(X_train)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/net/pr2/projects/plgrid/plggzzsn2026/3d_world_in_diffusion_models/.conda/envs/diffusion_3d_env/lib/python3.12/site-packages/sklearn/utils/_set_output.py", line 316, in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/net/pr2/projects/plgrid/plggzzsn2026/3d_world_in_diffusion_models/.conda/envs/diffusion_3d_env/lib/python3.12/site-packages/sklearn/base.py", line 907, in fit_transform
+    return self.fit(X, **fit_params).transform(X)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/net/pr2/projects/plgrid/plggzzsn2026/3d_world_in_diffusion_models/.conda/envs/diffusion_3d_env/lib/python3.12/site-packages/sklearn/base.py", line 1336, in wrapper
+    return fit_method(estimator, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/net/pr2/projects/plgrid/plggzzsn2026/3d_world_in_diffusion_models/.conda/envs/diffusion_3d_env/lib/python3.12/site-packages/sklearn/decomposition/_incremental_pca.py", line 249, in fit
+    self.partial_fit(X_batch, check_input=False)
+  File "/net/pr2/projects/plgrid/plggzzsn2026/3d_world_in_diffusion_models/.conda/envs/diffusion_3d_env/lib/python3.12/site-packages/sklearn/base.py", line 1336, in wrapper
+    return fit_method(estimator, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/net/pr2/projects/plgrid/plggzzsn2026/3d_world_in_diffusion_models/.conda/envs/diffusion_3d_env/lib/python3.12/site-packages/sklearn/decomposition/_incremental_pca.py", line 359, in partial_fit
+    U, S, Vt = linalg.svd(X, full_matrices=False, check_finite=False)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/net/pr2/projects/plgrid/plggzzsn2026/3d_world_in_diffusion_models/.conda/envs/diffusion_3d_env/lib/python3.12/site-packages/scipy/_lib/_util.py", line 1181, in wrapper
+    return f(*arrays, *other_args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/net/pr2/projects/plgrid/plggzzsn2026/3d_world_in_diffusion_models/.conda/envs/diffusion_3d_env/lib/python3.12/site-packages/scipy/linalg/_decomp_svd.py", line 152, in svd
+    raise ValueError(f"Indexing a matrix of {sz} elements would "
+ValueError: Indexing a matrix of 3470458880 elements would incur an in integer overflow in LAPACK. Try using numpy.linalg.svd instead.

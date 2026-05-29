@@ -1,0 +1,16 @@
+{
+  "layer": "layer_18",
+  "timestep": "t_200",
+  "train": {
+    "mae_azimuth_deg": 9.241408840077746,
+    "mae_elevation_deg": 4.660556291205052
+  },
+  "val": {
+    "mae_azimuth_deg": 16.01371327099339,
+    "mae_elevation_deg": 6.631537472737283
+  },
+  "test": {
+    "mae_azimuth_deg": 13.853671815145638,
+    "mae_elevation_deg": 6.625711116863713
+  }
+}

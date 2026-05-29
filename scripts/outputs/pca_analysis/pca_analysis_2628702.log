@@ -1,0 +1,7 @@
+Loading activations: layer_10 / t_500
+Shape: (1600, 143360)
+80% variance explained by 541 components
+90% variance explained by 949 components
+95% variance explained by 1025 components
+99% variance explained by 1025 components
+Plot saved to probe_exp/pca_analysis/pca_variance_layer_10_t_500.png

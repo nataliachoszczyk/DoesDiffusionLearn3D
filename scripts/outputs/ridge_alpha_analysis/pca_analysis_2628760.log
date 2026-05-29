@@ -1,0 +1,12 @@
+Loading activations: layer_10 / t_500
+Fitting PCA (n=512)...
+Running RidgeCV...
+Best alpha (CV): 1000.0
+  alpha=0.001 | azimuth MAE: 17.84 deg | elevation MAE: 7.77 deg
+  alpha=0.010 | azimuth MAE: 17.84 deg | elevation MAE: 7.77 deg
+  alpha=0.100 | azimuth MAE: 17.84 deg | elevation MAE: 7.77 deg
+  alpha=1.000 | azimuth MAE: 17.84 deg | elevation MAE: 7.77 deg
+  alpha=10.000 | azimuth MAE: 17.84 deg | elevation MAE: 7.77 deg
+  alpha=100.000 | azimuth MAE: 17.84 deg | elevation MAE: 7.77 deg
+  alpha=1000.000 | azimuth MAE: 17.84 deg | elevation MAE: 7.77 deg
+Plot saved to probe_exp/ridge_alpha_analysis/ridge_alpha_analysis.png

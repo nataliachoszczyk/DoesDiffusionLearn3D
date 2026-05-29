@@ -1,0 +1,36 @@
+ CUDA/12.4.0 loaded.
+Traceback (most recent call last):
+  File "/net/pr2/projects/plgrid/plggzzsn2026/3d_world_in_diffusion_models/DoesDiffusionLearn3D/src/probing/train_probe.py", line 130, in <module>
+    run(args.task_id, args.exp_dir)
+  File "/net/pr2/projects/plgrid/plggzzsn2026/3d_world_in_diffusion_models/DoesDiffusionLearn3D/src/probing/train_probe.py", line 94, in run
+    X_train_pca = pca.fit_transform(X_train)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/net/pr2/projects/plgrid/plggzzsn2026/3d_world_in_diffusion_models/.conda/envs/diffusion_3d_env/lib/python3.12/site-packages/cuml/internals/api_decorators.py", line 213, in wrapper
+    ret = func(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^
+  File "/net/pr2/projects/plgrid/plggzzsn2026/3d_world_in_diffusion_models/.conda/envs/diffusion_3d_env/lib/python3.12/site-packages/cuml/internals/api_decorators.py", line 365, in dispatch
+    return self.dispatch_func(func_name, gpu_func, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/net/pr2/projects/plgrid/plggzzsn2026/3d_world_in_diffusion_models/.conda/envs/diffusion_3d_env/lib/python3.12/site-packages/cuml/internals/api_decorators.py", line 215, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "base.pyx", line 739, in cuml.internals.base.UniversalBase.dispatch_func
+  File "pca.pyx", line 530, in cuml.decomposition.pca.PCA.fit_transform
+  File "/net/pr2/projects/plgrid/plggzzsn2026/3d_world_in_diffusion_models/.conda/envs/diffusion_3d_env/lib/python3.12/site-packages/cuml/internals/api_decorators.py", line 213, in wrapper
+    ret = func(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^
+  File "/net/pr2/projects/plgrid/plggzzsn2026/3d_world_in_diffusion_models/.conda/envs/diffusion_3d_env/lib/python3.12/site-packages/cuml/decomposition/incremental_pca.py", line 272, in fit
+    self.partial_fit(X_batch, check_input=False)
+  File "/net/pr2/projects/plgrid/plggzzsn2026/3d_world_in_diffusion_models/.conda/envs/diffusion_3d_env/lib/python3.12/site-packages/cuml/internals/api_decorators.py", line 213, in wrapper
+    ret = func(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^
+  File "/net/pr2/projects/plgrid/plggzzsn2026/3d_world_in_diffusion_models/.conda/envs/diffusion_3d_env/lib/python3.12/site-packages/cuml/decomposition/incremental_pca.py", line 382, in partial_fit
+    U, S, V = cp.linalg.svd(X, full_matrices=False)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/net/pr2/projects/plgrid/plggzzsn2026/3d_world_in_diffusion_models/.conda/envs/diffusion_3d_env/lib/python3.12/site-packages/cupy/linalg/_decomposition.py", line 571, in svd
+    buffersize = gesvd_bufferSize(handle, m, n)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "cupy_backends/cuda/libs/cusolver.pyx", line 2716, in cupy_backends.cuda.libs.cusolver.dgesvd_bufferSize
+  File "cupy_backends/cuda/libs/cusolver.pyx", line 2721, in cupy_backends.cuda.libs.cusolver.dgesvd_bufferSize
+  File "cupy_backends/cuda/libs/cusolver.pyx", line 1090, in cupy_backends.cuda.libs.cusolver.check_status
+cupy_backends.cuda.libs.cusolver.CUSOLVERError: CUSOLVER_STATUS_INVALID_VALUE
