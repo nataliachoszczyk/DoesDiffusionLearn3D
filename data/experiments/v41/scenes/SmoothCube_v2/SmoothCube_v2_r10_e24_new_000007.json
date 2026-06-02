@@ -1,0 +1,73 @@
+{
+  "image_index": 7,
+  "light_elevation_deg": 45.0,
+  "split": "new",
+  "relationships": {
+    "left": [
+      []
+    ],
+    "front": [
+      []
+    ],
+    "right": [
+      []
+    ],
+    "behind": [
+      []
+    ]
+  },
+  "objects": [
+    {
+      "rotation": 0.0,
+      "size": "large",
+      "color": "purple",
+      "material": "rubber",
+      "pixel_coords": [
+        256,
+        210,
+        10.78930950164795
+      ],
+      "shape": "cube",
+      "3d_coords": [
+        0.0,
+        0.0,
+        1.0
+      ]
+    }
+  ],
+  "directions": {
+    "left": [
+      -0.6563112735748291,
+      -0.7544902563095093,
+      0.0
+    ],
+    "behind": [
+      -0.754490315914154,
+      0.6563112735748291,
+      0.0
+    ],
+    "below": [
+      -0.0,
+      -0.0,
+      -1.0
+    ],
+    "front": [
+      0.754490315914154,
+      -0.6563112735748291,
+      -0.0
+    ],
+    "right": [
+      0.6563112735748291,
+      0.7544902563095093,
+      -0.0
+    ],
+    "above": [
+      0.0,
+      0.0,
+      1.0
+    ]
+  },
+  "light_energy": 24.0,
+  "light_azimuth_deg": 90.0,
+  "image_filename": "SmoothCube_v2_r10_e24_new_000007.png"
+}

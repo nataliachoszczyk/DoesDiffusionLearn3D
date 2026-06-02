@@ -156,10 +156,22 @@ parser.add_argument('--light_elevation', default=45.0, type=float,
     help="Elevation angle in degrees for key light (0-90).")
 parser.add_argument('--light_radius', default=5.0, type=float,
     help="Distance of key light from scene center.")
+parser.add_argument('--world_bg_strength', default=0.2, type=float,
+  help="World background strength.")
 
 
 parser.add_argument('--camera_jitter', default=0.5, type=float,
     help="The magnitude of random jitter to add to the camera position")
+parser.add_argument('--object_xy_range', default=3.0, type=float,
+  help="Half-width of the random object placement range on X/Y when positions are not fixed.")
+parser.add_argument('--fixed_size_name', default=None, type=str,
+  help="Fix object size label (for example: small, medium, large, xlarge).")
+parser.add_argument('--fixed_object_x', default=None, type=float,
+  help="Fixed X coordinate for object placement on the ground plane.")
+parser.add_argument('--fixed_object_y', default=None, type=float,
+  help="Fixed Y coordinate for object placement on the ground plane.")
+parser.add_argument('--fixed_object_rotation', default=None, type=float,
+  help="Fixed Z rotation (degrees) for objects. If omitted, rotation is random.")
 parser.add_argument('--render_num_samples', default=512, type=int,
     help="The number of samples to use when rendering. Larger values will " +
          "result in nicer images but will cause rendering to take longer.")
@@ -380,7 +392,7 @@ def render_scene(args,
   # ground.active_material.use_nodes = True
   # ground.active_material.node_tree.nodes['Diffuse BSDF'].inputs[0].default_value = (1.0, 1.0, 1.0, 1.0)
   bpy.context.scene.world.node_tree.nodes['Background'].inputs[0].default_value = (1.0, 1.0, 1.0, 1.0)
-  bpy.context.scene.world.node_tree.nodes['Background'].inputs[1].default_value = 0.2
+  bpy.context.scene.world.node_tree.nodes['Background'].inputs[1].default_value = args.world_bg_strength
 
   ground = bpy.data.objects['Ground']
   ground.cycles.is_shadow_catcher = False
@@ -429,8 +441,14 @@ def add_random_objects(scene_struct, num_objects, args, camera):
   objects = []
   blender_objects = []
   for i in range(num_objects):
-    # Choose a random size
-    size_name, r = random.choice(size_mapping)
+    # Choose object size (fixed if requested, otherwise random)
+    if args.fixed_size_name is not None:
+      selected = [pair for pair in size_mapping if pair[0] == args.fixed_size_name]
+      if len(selected) == 0:
+        raise ValueError('Unknown --fixed_size_name: %s' % args.fixed_size_name)
+      size_name, r = selected[0]
+    else:
+      size_name, r = random.choice(size_mapping)
 
     # Try to place the object, ensuring that we don't intersect any existing
     # objects and that we are more than the desired margin away from all existing
@@ -444,8 +462,12 @@ def add_random_objects(scene_struct, num_objects, args, camera):
         for obj in blender_objects:
           utils.delete_object(obj)
         return add_random_objects(scene_struct, num_objects, args, camera)
-      x = random.uniform(-3, 3)
-      y = random.uniform(-3, 3)
+      if args.fixed_object_x is not None and args.fixed_object_y is not None:
+        x = args.fixed_object_x
+        y = args.fixed_object_y
+      else:
+        x = random.uniform(-args.object_xy_range, args.object_xy_range)
+        y = random.uniform(-args.object_xy_range, args.object_xy_range)
       # Check to make sure the new object is further than min_dist from all
       # other objects, and further than margin along the four cardinal directions
       dists_good = True
@@ -491,8 +513,11 @@ def add_random_objects(scene_struct, num_objects, args, camera):
     if obj_name == 'Cube':
       r /= math.sqrt(2)
 
-    # Choose random orientation for the object.
-    theta = 360.0 * random.random()
+    # Choose orientation for the object (fixed if requested).
+    if args.fixed_object_rotation is not None:
+      theta = args.fixed_object_rotation
+    else:
+      theta = 360.0 * random.random()
 
     # Actually add the object to the scene
     utils.add_object(args.shape_dir, obj_name, r, (x, y), theta=theta)
